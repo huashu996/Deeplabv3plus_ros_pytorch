@@ -9,11 +9,10 @@ from tqdm import tqdm
 import network
 import utils
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 import random
 import argparse
 import numpy as np
-
+from torch.cuda import *
 from torch.utils import data
 from datasets import VOCSegmentation, Cityscapes, cityscapes
 from torchvision import transforms as T
@@ -175,7 +174,7 @@ def mian(opts,model,device):
         rate.sleep()
 if __name__ == '__main__':
     opts = get_argparser().parse_args()
-    weights = '/home/cxl/sem_slam/src/DeepLabV3Plus-Pytorch/weights/best_deeplabv3plus_mobilenet_cityscapes_os16.pth'
+    weights = './weights/best_deeplabv3plus_mobilenet_cityscapes_os16.pth'
     dataset = 'cityscapes'
     model_choice = 'deeplabv3plus_mobilenet'
     if dataset.lower() == 'cityscapes':
@@ -183,6 +182,7 @@ if __name__ == '__main__':
         decode_fn = Cityscapes.decode_target
     
     #device = torch.device('cuda:0')
+    print(torch.cuda.is_available())
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print("Device: %s" % device)
     #加载模型
